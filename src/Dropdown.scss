@@ -1,0 +1,229 @@
+$primary-color: #ececec;
+$primary-color-hover: darken($primary-color, 5%);
+
+$secondary-color: #505050;
+
+$primary-text-color: #5e5e5e;
+$secondary-text-color: darken($primary-text-color, 20%);
+
+$primary-font: inherit;
+$primary-font-size: .875rem;
+$secondary-font-size: .75rem;
+
+$button-width: 10rem;
+$button-height: 2.5rem;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    &::before,
+    &::after {
+        box-sizing: initial;
+    }
+}
+
+.dropdown {
+    position: relative;
+    display: block;
+    width: $button-width;
+    margin: 1rem;
+
+    &-result {
+        position: relative;
+        display: block;
+        width: $button-width;
+        margin: 1rem;
+    }
+
+    &-error { display: block; }
+
+    &-placeholder {
+        position: relative;
+        display: block;
+    
+        width: 100%;
+        padding-left: 15px;
+        max-width: $button-width;
+        height: $button-height;
+    
+        border: 0;
+        border-radius: 2px;
+        background-color: $primary-color;
+
+        color: $primary-text-color;
+        font: {
+            family: $primary-font;
+            size: $primary-font-size;
+        }
+        text-align: left;
+
+        transition: all 200ms ease-in-out;
+        will-change: auto;
+
+        appearance: none;
+        cursor: pointer;
+
+        &::after {
+            display: block;
+            width: 7px;
+            height: 7px;
+
+            position: absolute;
+            top: calc(50% - 7px); right: 15px;
+
+            box-shadow: 2px 2px 0 0 $primary-text-color;
+            transform: rotate(45deg);
+
+            transition: all 200ms ease-in-out;
+            will-change: auto;
+
+            content: "";
+        }
+
+        &.is-visible,
+        &:hover,
+        &:focus {
+            background-color: $primary-color-hover;
+            outline: none;
+        }
+
+        &.is-visible {
+            &::after {
+                top: 50%;
+                transform: rotate(-135deg);
+            }
+        }
+    }
+
+    &-menu {
+        position: relative;
+        display: block;
+
+        width: 100%;
+        height: 100%;
+        max-height: 0;
+
+        border-radius: 0 0 2px 2px;
+        background-color: $primary-color;
+        transition: max-height 150ms ease-in-out;
+
+        will-change: max-height;
+        overflow: hidden;
+
+        &.is-visible {
+            max-height: 200px;
+            background-color: $primary-color-hover;
+        }
+
+        div {
+            display: block;
+            max-height: 150px;
+            margin: 10px 0;
+            overflow: {
+                x: hidden;
+                y: auto;
+            }
+
+            &::before,
+            &::after {
+                display: block;
+                position: absolute;
+                pointer-events: none;
+                content: "";
+            }
+
+            &::before {
+                width: 100%;
+                height: 10px;
+
+                bottom: 0;
+                left: 0;
+
+                background-color: darken($primary-color-hover, 5%);
+            }
+
+            &::after {
+                width: 5px;
+                height: 5px;
+
+                bottom: 6px;
+                left: calc(50% - 5px);
+
+                box-shadow: 2px 2px 0 0 $primary-text-color;
+                transform: rotate(45deg);
+            }
+        }
+
+        i {
+            display: block;
+            width: 24px;
+            height: 24px;
+
+            position: absolute;
+            top: 3px; right: 8px;
+
+            background-color: $primary-color;
+            color: $secondary-text-color;
+
+            font: {
+                size: $primary-font-size;
+                weight: 700;
+                style: normal;
+            }
+
+            text-align: center;
+            line-height: 24px;
+
+            transition: all 150ms ease-in-out;
+            will-change: auto;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $primary-color-hover;
+            }
+        }
+
+        input {
+            display: block;
+
+            width: calc(100% - 10px);
+            height: 30px;
+
+            margin: 0 auto;
+            padding: 0 10px;
+
+            border: 0;
+            border-radius: 2px;
+            background-color: $primary-color;
+
+            &:focus { outline: none; }
+        }
+
+        ul {
+            width: 100%;
+            height: 100%;
+
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                display: block;
+                padding: 5px 10px;
+                color: $primary-text-color;
+                font: {
+                    size: $secondary-font-size;
+                    weight: 700;
+                }
+                line-height: 1.25rem;
+                cursor: pointer;
+
+                &:hover {
+                    color: $secondary-text-color;
+                }
+            }
+        }
+    }
+}

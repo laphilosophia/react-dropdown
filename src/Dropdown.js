@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
+import './Dropdown.scss'
 
 class Dropdown extends Component {
     state = {
@@ -12,9 +12,9 @@ class Dropdown extends Component {
     }
 
     static defaultProps = {
-        className: 'dropdown',
         children: [],
         isStored: false,
+        storeKey: 'dropdown-selected',
         filter: false
     }
 
@@ -28,7 +28,13 @@ class Dropdown extends Component {
     }
 
     componentDidMount() {
-        this.setState({ result: this.state.search })
+        const { storeKey } = this.props
+        const stored = localStorage.getItem(storeKey)
+
+        this.setState({
+            result: this.state.search,
+            selected: JSON.parse(stored) || {}
+        })
         document.addEventListener('click', this.handleClickOutside)
     }
     
@@ -40,9 +46,29 @@ class Dropdown extends Component {
         this.wrapperRef = node
     }
 
+    isEmpty = obj => {
+        for (const key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false
+        }
+    
+        return true
+    }
+
     setSelectedData = async (ev, data) => {
+        const { isStored, storeKey } = this.props
+
         ev.persist()
-        await this.setState({ selected: data })
+
+        await this.setState({
+            selected: data,
+            result: this.props.children,
+            isVisible: false
+        })
+
+        if (isStored) {
+            await localStorage.setItem(storeKey, JSON.stringify(data))
+        }
     }
 
     toggleDropdown = async () => {
@@ -58,57 +84,75 @@ class Dropdown extends Component {
     }
 
     filterList = async event => {
+        this.setState({ result: this.props.children })
+
         let updatedList = this.state.search
 
         updatedList = await updatedList.filter(item => {
-            return item.toLowerCase().search(event.target.value.toLowerCase()) !== -1
+            return JSON.stringify(item).toLowerCase().search(event.target.value.toLowerCase()) !== -1
         })
 
         await this.setState({ result: updatedList })
     }
 
+    clearFilter = () => this.setState({ selected: {} })
+
     render () {
         const { selected, hasError, isVisible, result } = this.state
-        const { className, children, filter } = this.props
+        const { filter } = this.props
 
         if (hasError) {
-            return <div className={`${className} ${className}-error`}></div>
+            return (
+                <div className="dropdown">
+                    <span className="dropdown-error"></span>
+                </div>
+            )
         }
 
         return (
-            <div ref={this.setWrapperRef} className={`${className}`}>
+            <React.Fragment>
+            <div ref={this.setWrapperRef} className="dropdown">
                 <button type="button"
-                    className={`${className}-button`}
+                    className={`dropdown-placeholder ${isVisible ? 'is-visible' : ''}`}
                     onClick={() => this.toggleDropdown()}>
                     {selected.label ? selected.label : 'Select Item'}
                 </button>
 
-                {filter ? 
-                    <input type="text"
-                        className={`${className}-filter`}
-                        name={`${className}-filter`}
-                        id={`${className}-filter`}
-                        onChange={e => this.filterList()}/>
-                : null}
+                {result.length ?
+                    <nav className={`dropdown-menu ${isVisible ? 'is-visible' : ''}`}>
+                        {filter ? 
+                            <React.Fragment>
+                                <input type="text"
+                                    className="dropdown-input"
+                                    name="dropdown-input"
+                                    id="dropdown-input"
+                                    placeholder="Filter..."
+                                    defaultValue={selected.label}
+                                    onChange={e => this.filterList(e)}/>
 
-                {result ? '' : ''}
-
-                {isVisible && children.length ?
-                <ul className={`${className}-list`}>
-                    {children.length ? children.map((child, i) => {
-                        return <li
-                            key={i}
-                            className={`${className}-list--item`}
-                            onClick={e => {
-                                this.props.onClick(e, child)
-                                this.setSelectedData(e, child)
-                            }}>
-                                {child.label}
-                            </li>
-                    }) : ''}
-                </ul>
+                                {this.isEmpty(selected) ? '' : <i onClick={this.clearFilter}>x</i>}
+                            </React.Fragment>
+                        : null}
+                        <div className="dropdown-list">
+                            <ul>
+                                {result.length ? result.map((item, i) =>
+                                    <li
+                                        key={i}
+                                        className="dropdown-list--item"
+                                        onClick={e => {
+                                            this.props.onClick(e, item)
+                                            this.setSelectedData(e, item)
+                                        }}>
+                                            {item.label}
+                                        </li>
+                                ) : ''}
+                            </ul>
+                        </div>
+                    </nav>
                 : ''}
             </div>
+            {selected ? <p className="dropdown-result" data-value={selected.value}>{selected.label}</p> : ''}
+            </React.Fragment>
         )
     }
 }

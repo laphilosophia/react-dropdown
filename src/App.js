@@ -1,20 +1,32 @@
 import React, { Component } from 'react';
 import Dropdown from './Dropdown'
-import './Dropdown.css'
 
 class App extends Component {
   state = {
     menu: [
-      { id: '1', value: 'lorem', label: 'Lorem', target: 'lorem' },
-      { id: '2', value: 'ipsum', label: 'Ipsum', target: 'ipsum' },
-      { id: '3', value: 'dolor', label: 'Dolor', target: 'dolor' },
-      { id: '4', value: 'conse', label: 'Conse', target: 'conse' },
-      { id: '5', value: 'adici', label: 'Adici', target: 'adici' }
-    ]
+      { id: '1', value: 'lorem', label: 'Lorem Ipsum', target: 'lorem' },
+      { id: '2', value: 'ipsum', label: 'Ipsum Dolor', target: 'ipsum' },
+      { id: '3', value: 'dolor', label: 'Dolor Sit Amet', target: 'dolor' },
+      { id: '4', value: 'conse', label: 'Consectetur', target: 'conse' },
+      { id: '5', value: 'adici', label: 'Adicisping', target: 'adici' },
+      { id: '6', value: 'lorem', label: 'Lorem Ipsum', target: 'lorem' },
+      { id: '7', value: 'ipsum', label: 'Ipsum Dolor', target: 'ipsum' },
+      { id: '8', value: 'dolor', label: 'Dolor Sit Amet', target: 'dolor' },
+      { id: '9', value: 'conse', label: 'Consectetur', target: 'conse' },
+      { id: '10', value: 'adici', label: 'Adicisping', target: 'adici' },
+      { id: '11', value: 'lorem', label: 'Lorem Ipsum', target: 'lorem' },
+      { id: '12', value: 'ipsum', label: 'Ipsum Dolor', target: 'ipsum' },
+      { id: '13', value: 'dolor', label: 'Dolor Sit Amet', target: 'dolor' },
+      { id: '14', value: 'conse', label: 'Consectetur', target: 'conse' },
+      { id: '15', value: 'adici', label: 'Adicisping', target: 'adici' },
+    ],
+    selected: {}
   }
 
-  handleClick (event, selected) {
-    console.log('passed to parent', selected)
+  handleClick (e, item) {
+    this.setState({ selected: item }, () => {
+      console.log('active selected:', this.state.selected)
+    })
   }
 
   render() {
@@ -23,11 +35,11 @@ class App extends Component {
     return (
       <div className="App">
         <Dropdown
-          className="dropdown"
           children={menu}
-          filter={false}
-          isStored={false}
-          onClick={(event, selected) => this.handleClick(event, selected)}/>
+          filter={true}
+          isStored={true}
+          storeKey="sample-key"
+          onClick={(e, item) => this.handleClick(e, item)}/>
       </div>
     );
   }
