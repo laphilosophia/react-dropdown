@@ -158,9 +158,9 @@ class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
-    className: PropTypes.string,
     children: PropTypes.array,
     isStored: PropTypes.bool,
+    storeKey: PropTypes.string,
     filter: PropTypes.bool
 }
 
